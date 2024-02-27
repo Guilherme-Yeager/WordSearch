@@ -26,6 +26,16 @@ if __name__ == "__main__":
             "OVO",
             "RATO",
             "ZEBRA",
+            "GALO",
+            "VAGNER",
+            "SAPO",
+            "GREMIO",
+            "ALCIDES",
+            "RAPHAEL",
+            "MAYLI",
+            "JOSEVAL",
+            "ANDRE",
+            "ANDRES",
         ]
     }
 
