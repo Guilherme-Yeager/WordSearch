@@ -1,11 +1,5 @@
-import screen as screen
+from screen import Screen, Draw
 import dataBase as dt
-
-
-def voltarInicio() -> None:
-    desenho.drawLabel("CAÇA-PALAVRAS", 260, 85)
-    desenho.drawButton("Jogar", 305, 245, 18, comand=lambda: play(janela, desenho))
-    desenho.drawButton("Sair", 305, 320, 18, comand=janela.closeWindow)
 
 
 def play(janela, desenho) -> None:
@@ -13,12 +7,13 @@ def play(janela, desenho) -> None:
     janela.cleanWindow()
     desenho.drawBoard()
     desenho.drawWords(palavras)
-    desenho.drawFunc(janela, voltarInicio)
+    desenho.drawFunc(main)
 
 
 # ------------------------
 def main() -> None:
-    janela.configureWindow()
+    if janela.quantJanelas == 0:
+        janela.configureWindow()
     desenho.drawLabel("CAÇA-PALAVRAS", 260, 85)
     desenho.drawButton("Jogar", 305, 245, 18, comand=lambda: play(janela, desenho))
     desenho.drawButton("Sair", 305, 320, 18, comand=janela.closeWindow)
@@ -26,8 +21,8 @@ def main() -> None:
 
 if __name__ == "__main__":
     # Objetos
-    janela = screen.Screen()
-    desenho = screen.Draw(janela.screen)
+    janela = Screen()
+    desenho = Draw(janela)
     # ------------------------
     main()
     # ------------------------

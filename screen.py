@@ -3,7 +3,10 @@ from random import choice, randint
 
 
 
+
 class Screen:
+    quantJanelas = 0
+
     def __init__(self) -> None:
         self.screen = tk.Tk()
 
@@ -15,6 +18,7 @@ class Screen:
         x = self.screen.winfo_screenwidth() // 2 - 400
         y = self.screen.winfo_screenheight() // 11
         self.screen.geometry(f"800x600+{x}+{y}")
+        self.quantJanelas += 1
 
     def closeWindow(self) -> None:
         self.screen.destroy()
@@ -23,19 +27,62 @@ class Screen:
         for componente in self.screen.winfo_children():
             componente.destroy()
 
+class Utility:
 
-class Draw:
-    def __init__(self, screen: tk.Tk) -> None:
-        self.screen = screen
+    def __init__(self, desenho, janela) -> None:
+        self.quantAcertos = 0
+        self.desenho = desenho
+        self.janela = janela
+
+    def voltarInicio(self, main):
+        self.janela.cleanWindow()
+        self.desenho.restartDraw()
+        main()
+
+
+    def click(self, botao: tk.Button):
+        if botao["bg"] == "#BEB6E0":
+            botao["bg"] = "#052F23"
+            self.desenho.componentesSelecionados.append(botao)
+            if self.verificarPalavra():
+                self.desenho.componentesSelecionados.clear()
+        else:
+            botao["bg"] = "#BEB6E0"
+            self.desenho.componentesSelecionados.remove(botao)
+
+
+    def verificarPalavra(self):
+        y = 165
+        acertou = False
+        for palavra in self.desenho.palavrasCorretas:
+            if set(palavra) == set(self.desenho.componentesSelecionados):
+                linha = tk.Frame(self.janela.screen, bg='red', height=2, width=98)
+                linha.place(x=10, y=y+10)
+                acertou = True
+                for comp in self.desenho.componentesSelecionados:
+                    comp["bg"] = "#BEB6E0"
+                    comp["fg"] = "#13A913"
+                self.quantAcertos += 1
+                if self.quantAcertos == 5:
+                    ...
+                break
+            y += 45
+        return acertou
+
+class Draw(Utility):
+
+    def __init__(self, screen: Screen) -> None:
+        super().__init__(self, screen)
+        self.janela = screen
         self.componentes = []
         self.palavrasCorretas = []
-        self.imagens = []
         self.componentesSelecionados = []
+        self.imagens = []
 
 
     def drawLabel(self, text, posX, posY, tam=24) -> None:
         label = tk.Label(
-            self.screen,
+            self.janela.screen,
             text=text,
             font=("Arial", tam, "bold"),
             bg="#0000b7",
@@ -46,7 +93,7 @@ class Draw:
 
     def drawButton(self, text, posX, posY, tam=12, comand=None) -> None:
         bt = tk.Button(
-            self.screen,
+            self.janela.screen,
             text=text,
             font=("Arial", tam, "bold"),
             bg="#000099",
@@ -61,9 +108,9 @@ class Draw:
 
     def drawBoard(self) -> None:
         widgets = [
-            tk.Frame(self.screen, bg="#00005f", width=800, height=600),
+            tk.Frame(self.janela.screen, bg="#00005f", width=800, height=600),
             tk.Label(
-                self.screen,
+                self.janela.screen,
                 text="Palavras:",
                 font=("Arial", 19, "bold"),
                 bg="#00005f",
@@ -81,7 +128,7 @@ class Draw:
         x, y = 148, -1
         while not (tabuleiroPreenchido == 100):
             botao = tk.Button(
-                self.screen,
+                self.janela.screen,
                 text=choice(letras),
                 font=("Arial", 16, "bold"),
                 width=4,
@@ -90,9 +137,8 @@ class Draw:
                 fg="#000000",
                 borderwidth=4,
                 relief="flat",
-                command=lambda tab=tabuleiroPreenchido: click(self,
+                command=lambda tab=tabuleiroPreenchido: self.click(
                     self.componentes[tab],
-                    self.componentesSelecionados,
                 ),
             )
             botao.place(x=x, y=y)
@@ -107,7 +153,7 @@ class Draw:
         y = 15
         for palavra in palavras:
             tk.Label(
-                self.screen,
+                self.janela.screen,
                 text=palavra,
                 font=("Arial", 12, "bold"),
                 bg="#00005f",
@@ -174,17 +220,15 @@ class Draw:
             i += 1
             
 
-    def drawFunc(self, janela: Screen, play) -> None:
+    def drawFunc(self, main) -> None:
         self.imagens.append(tk.PhotoImage(file="img/voltar.png"))
         btVoltar = tk.Button(
-            self.screen,
+            self.janela.screen,
             image=self.imagens[0],
-            width=32,
-            height=32,
             bg="#009BEE",
             borderwidth=2,
             relief="solid",
-            command=lambda: voltarInicio(janela, self, play),
+            command= lambda: self.voltarInicio(main),
         )
         btVoltar.place(x=0, y=565)
 
@@ -193,36 +237,3 @@ class Draw:
         self.palavrasCorretas.clear()
         self.imagens.clear()
 
-
-def voltarInicio(janela: Screen, desenho: Draw, inicio):
-    janela.cleanWindow()
-    desenho.restartDraw()
-    inicio()
-
-
-def click(self, botao: tk.Button, compSelecionados: list):
-    if botao["bg"] == "#BEB6E0":
-        botao["bg"] = "#052F23"
-        compSelecionados.append(botao)
-        if verificarPalavra(self, self.palavrasCorretas, self.componentesSelecionados):
-            compSelecionados.clear()
-            ...
-    else:
-        botao["bg"] = "#BEB6E0"
-        compSelecionados.remove(botao)
-
-
-def verificarPalavra(self, palavras: list, compSelecionados):
-    y = 165
-    acertou = False
-    for palavra in palavras:
-        if set(palavra) == set(compSelecionados):
-            linha = tk.Frame(self.screen, bg='red', height=2, width=100)
-            linha.place(x=10, y=y+10)
-            acertou = True
-            for comp in compSelecionados:
-               comp["bg"] = "#BEB6E0"
-               comp["fg"] = "#13A913"
-            break
-        y += 45
-    return acertou
