@@ -1,10 +1,10 @@
-import pandas as pd
+from pandas import DataFrame, read_csv
 
 
 def loadWords():
-    dados = pd.read_csv("data/dados.csv").sample(n=5).to_dict()
+    dados = read_csv("data/dados.csv").sample(n=5).to_dict()
     lista = []
-    for _, v in dados['Palavras'].items():
+    for _, v in dados["Palavras"].items():
         lista.append(v)
     return lista
 
@@ -39,5 +39,5 @@ if __name__ == "__main__":
         ]
     }
 
-    dados = pd.DataFrame(dic)
+    dados = DataFrame(dic)
     dados.to_csv("data/dados.csv", index=False)
