@@ -5,7 +5,7 @@ from screen import Screen, Draw, Animation
 def play(janela: Screen, desenho: Draw) -> None:
     palavras = loadWords()
     janela.cleanWindow()
-    desenho.drawBoard(main , play)
+    desenho.drawBoard(main, play)
     desenho.drawWords(palavras)
     desenho.drawFunc(main)
 
@@ -17,7 +17,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # Objetos
     janela = Screen()
     janela.configureWindow()
     desenho = Draw(janela)

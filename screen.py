@@ -76,6 +76,16 @@ class Utility:
             y += 45
         return acertou
 
+    def inverterPalavra(self, btPalavra):
+        if randint(0, 1) == 1:
+            listCaracter = []
+            for bt in btPalavra:
+                listCaracter.append(bt["text"])
+                btPos = -1
+            for bt in btPalavra:
+                bt["text"] = listCaracter[btPos]
+                btPos -= 1
+
 
 class Draw(Utility):
 
@@ -190,7 +200,7 @@ class Draw(Utility):
             btPalavra = []
 
             btPos = (posY * 10) + posX
-
+            conflito = False
             for caractere in palavras[posPalavras]:
                 for index in range(len(palavras[posPalavras])):
                     pos = 0
@@ -203,14 +213,15 @@ class Draw(Utility):
                     for palavraCorreta in self.palavrasCorretas:
                         if self.componentes[pos] in palavraCorreta:
                             if self.componentes[pos]["text"] == caractere:
+                                conflito = True
                                 break
                             else:
                                 i -= 1
                                 return
 
-                if self.componentes[btPos] not in btPalavra:
-                    self.componentes[btPos]["text"] = caractere
-                    btPalavra.append(self.componentes[btPos])
+                self.componentes[btPos]["text"] = caractere
+                self.componentes[btPos]["bg"] = "red"
+                btPalavra.append(self.componentes[btPos])
 
                 if dir == 1:
                     btPos += 1
@@ -219,6 +230,8 @@ class Draw(Utility):
                 else:
                     btPos += 11
 
+            if not conflito:
+                self.inverterPalavra(btPalavra)
             self.palavrasCorretas.append(btPalavra)
             posPalavras += 1
 
