@@ -141,7 +141,7 @@ class Draw(Utility):
             widget.place(x=pos[i][x], y=pos[i][y])
             i += 1
         letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        
+
         tabuleiroPreenchido = 0
         x, y = 148, -1
         while not (tabuleiroPreenchido == 100):
@@ -195,10 +195,12 @@ class Draw(Utility):
             elif dir == 2:
                 posX = randint(0, 9)
                 posY = randint(0, (9 - len(palavras[posPalavras]) + 1))
-            else:
+            elif dir == 3:
                 posX = randint(0, (9 - len(palavras[posPalavras]) + 1))
                 posY = randint(0, (9 - len(palavras[posPalavras]) + 1))
-
+            else:
+                posX = randint(len(palavras[posPalavras]) - 1, 9)
+                posY = randint(0, (9 - len(palavras[posPalavras]) + 1))
             btPalavraDepois = []
             btPalavraAntes = []
 
@@ -225,8 +227,10 @@ class Draw(Utility):
                     btPos += 1
                 elif dir == 2:
                     btPos += 10
-                else:
+                elif dir == 3:
                     btPos += 11
+                else:
+                    btPos += 9
 
             if not conflito:
                 self.inverterPalavra(btPalavraDepois)
@@ -234,7 +238,7 @@ class Draw(Utility):
             posPalavras += 1
 
         while i < len(palavras):
-            posicionarPalavra(randint(1, 3))
+            posicionarPalavra(randint(1, 4))
             i += 1
 
     def drawFunc(self, main) -> None:
@@ -248,6 +252,16 @@ class Draw(Utility):
             command=lambda: self.voltarInicio(main),
         )
         btVoltar.place(x=0, y=565)
+        self.imagens.append(PhotoImage(file="img/configurar.png"))
+        btConfigurar = Button(
+            self.janela.screen,
+            image=self.imagens[1],
+            bg="#009BEE",
+            borderwidth=2,
+            relief="solid",
+            command=None,
+        )
+        btConfigurar.place(x=110, y=565)
 
     def restartDraw(self) -> None:
         self.componentes.clear()
