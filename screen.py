@@ -141,6 +141,7 @@ class Draw(Utility):
             widget.place(x=pos[i][x], y=pos[i][y])
             i += 1
         letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        
         tabuleiroPreenchido = 0
         x, y = 148, -1
         while not (tabuleiroPreenchido == 100):
@@ -197,31 +198,28 @@ class Draw(Utility):
             else:
                 posX = randint(0, (9 - len(palavras[posPalavras]) + 1))
                 posY = randint(0, (9 - len(palavras[posPalavras]) + 1))
-            btPalavra = []
+
+            btPalavraDepois = []
+            btPalavraAntes = []
 
             btPos = (posY * 10) + posX
             conflito = False
             for caractere in palavras[posPalavras]:
-                for index in range(len(palavras[posPalavras])):
-                    pos = 0
-                    if dir == 1:
-                        pos = (posY * 10) + posX + index
-                    elif dir == 2:
-                        pos = ((posY + index) * 10) + posX
-                    else:
-                        pos = ((posY + index) * 10) + posX + index
-                    for palavraCorreta in self.palavrasCorretas:
-                        if self.componentes[pos] in palavraCorreta:
-                            if self.componentes[pos]["text"] == caractere:
-                                conflito = True
-                                break
-                            else:
-                                i -= 1
-                                return
+                for palavraCorreta in self.palavrasCorretas:  # Colisão
+                    if self.componentes[btPos] in palavraCorreta:
+                        if self.componentes[btPos]["text"] == caractere:
+                            conflito = True
+                            break
+                        else:
+                            i -= 1
+                            if btPalavraDepois != []:
+                                for enum, c in enumerate(btPalavraAntes):
+                                    btPalavraDepois[enum]["text"] = c
+                            return
 
+                btPalavraAntes.append(self.componentes[btPos]["text"])
                 self.componentes[btPos]["text"] = caractere
-                self.componentes[btPos]["bg"] = "red"
-                btPalavra.append(self.componentes[btPos])
+                btPalavraDepois.append(self.componentes[btPos])
 
                 if dir == 1:
                     btPos += 1
@@ -231,8 +229,8 @@ class Draw(Utility):
                     btPos += 11
 
             if not conflito:
-                self.inverterPalavra(btPalavra)
-            self.palavrasCorretas.append(btPalavra)
+                self.inverterPalavra(btPalavraDepois)
+            self.palavrasCorretas.append(btPalavraDepois)
             posPalavras += 1
 
         while i < len(palavras):
