@@ -27,7 +27,7 @@ class Screen:
 class Utility:
 
     def __init__(self, desenho, janela) -> None:
-        self.quantAcertos = 0
+        self.quantAcertos = [0, 0, 0, 0, 0]
         self.desenho = desenho
         self.janela = janela
 
@@ -52,7 +52,7 @@ class Utility:
     def verificarPalavra(self, main, play):
         y = 165
         acertou = False
-        for palavra in self.desenho.palavrasCorretas:
+        for i, palavra in enumerate(self.desenho.palavrasCorretas):
             if set(palavra) == set(self.desenho.componentesSelecionados):
                 linha = Frame(self.janela.screen, bg="red", height=2, width=98)
                 linha.place(x=10, y=y + 11)
@@ -60,9 +60,9 @@ class Utility:
                 for comp in self.desenho.componentesSelecionados:
                     comp["bg"] = "#BEB6E0"
                     comp["fg"] = "#13A913"
-                self.quantAcertos += 1
-                if self.quantAcertos == 5:
-                    self.quantAcertos = 0
+                self.quantAcertos[i] = 1
+                if set(self.quantAcertos) == {1}:
+                    self.quantAcertos = [0, 0, 0, 0, 0]
                     res = messagebox.askyesno(
                         "Parabéns, você ganhou!",
                         "Deseja jogar novamente?",
@@ -217,6 +217,7 @@ class Draw(Utility):
                             if btPalavraDepois != []:
                                 for enum, c in enumerate(btPalavraAntes):
                                     btPalavraDepois[enum]["text"] = c
+
                             return
 
                 btPalavraAntes.append(self.componentes[btPos]["text"])
