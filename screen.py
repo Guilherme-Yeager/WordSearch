@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, PhotoImage, Frame, Button, messagebox
+from tkinter import Tk, Label, PhotoImage, Frame, Button, messagebox, Toplevel
 from random import choice, randint
 
 
@@ -31,23 +31,34 @@ class Utility:
         self.desenho = desenho
         self.janela = janela
 
-    def voltarInicio(self, func, *param):
+    def voltarInicio(self, func, vencedor=0):
+        resp = None
+        if vencedor == 0:
+            resp = messagebox.askyesno(
+                "Voltar",
+                "Deseja voltar ao menu principal?",
+            )
+            if not resp:
+                return
+
         self.janela.cleanWindow()
         self.desenho.restartDraw()
-        if param == ():
+        if resp:
+            func()
+        elif vencedor == 1:
             func()
         else:
-            func(param[0], param[1])
+            func(self.janela, self.desenho)
 
     def click(self, botao: Button, main, play):
         if botao["bg"] == "#BEB6E0":
             botao["bg"] = "#052F23"
             self.desenho.componentesSelecionados.append(botao)
-            if self.verificarPalavra(main, play):
-                self.desenho.componentesSelecionados.clear()
         else:
             botao["bg"] = "#BEB6E0"
             self.desenho.componentesSelecionados.remove(botao)
+        if self.verificarPalavra(main, play):
+            self.desenho.componentesSelecionados.clear()
 
     def verificarPalavra(self, main, play):
         y = 165
@@ -68,9 +79,15 @@ class Utility:
                         "Deseja jogar novamente?",
                     )
                     if res:
-                        self.voltarInicio(play, self.janela, self.desenho)
+                        self.voltarInicio(
+                            play,
+                            vencedor=2,
+                        )
                     else:
-                        self.voltarInicio(main)
+                        self.voltarInicio(
+                            main,
+                            vencedor=1,
+                        )
 
                 break
             y += 45
@@ -86,6 +103,9 @@ class Utility:
                 bt["text"] = listCaracter[btPos]
                 btPos -= 1
 
+    def configurarJogo(self):
+        pass
+
 
 class Draw(Utility):
 
@@ -97,18 +117,25 @@ class Draw(Utility):
         self.componentesSelecionados = []
         self.imagens = []
 
-    def drawLabel(self, text, posX, posY, tam=24) -> None:
+    def drawBgMenu(self):
+        self.imagens.append(PhotoImage(file="img/menu.png"))
+        labelBg = Label(self.janela.screen, image=self.imagens[0])
+        labelBg.place(x=-2, y=-2)
+
+    def drawLabel(self, text, posX, posY, tam=20) -> None:
         label = Label(
             self.janela.screen,
             text=text,
             font=("Arial", tam, "bold"),
-            bg="#BEB6E0",
-            fg="#000000",
+            bg="#0646AF",
+            fg="#ffffff",
             justify="center",
+            borderwidth=4,
+            relief="raised",
         )
         label.place(x=posX, y=posY)
 
-    def drawButton(self, text, posX, posY, tam=12, comand=None) -> None:
+    def drawButton(self, text, posX, posY, tam=14, comand=None) -> None:
         bt = Button(
             self.janela.screen,
             text=text,
@@ -117,8 +144,7 @@ class Draw(Utility):
             fg="#ffffff",
             borderwidth=4,
             relief="solid",
-            width=12,
-            height=1,
+            width=10,
             command=comand,
         )
         bt.place(x=posX, y=posY)
@@ -141,7 +167,6 @@ class Draw(Utility):
             widget.place(x=pos[i][x], y=pos[i][y])
             i += 1
         letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
         tabuleiroPreenchido = 0
         x, y = 148, -1
         while not (tabuleiroPreenchido == 100):
@@ -217,7 +242,6 @@ class Draw(Utility):
                             if btPalavraDepois != []:
                                 for enum, c in enumerate(btPalavraAntes):
                                     btPalavraDepois[enum]["text"] = c
-
                             return
 
                 btPalavraAntes.append(self.componentes[btPos]["text"])
@@ -243,10 +267,12 @@ class Draw(Utility):
             i += 1
 
     def drawFunc(self, main) -> None:
+        if self.imagens == []:
+            self.imagens.append(None)
         self.imagens.append(PhotoImage(file="img/voltar.png"))
         btVoltar = Button(
             self.janela.screen,
-            image=self.imagens[0],
+            image=self.imagens[1],
             bg="#009BEE",
             borderwidth=2,
             relief="solid",
@@ -256,11 +282,11 @@ class Draw(Utility):
         self.imagens.append(PhotoImage(file="img/configurar.png"))
         btConfigurar = Button(
             self.janela.screen,
-            image=self.imagens[1],
+            image=self.imagens[2],
             bg="#009BEE",
             borderwidth=2,
             relief="solid",
-            command=None,
+            command=self.configurarJogo,
         )
         btConfigurar.place(x=110, y=565)
 
@@ -268,8 +294,3 @@ class Draw(Utility):
         self.componentes.clear()
         self.palavrasCorretas.clear()
         self.imagens.clear()
-
-
-class Animation:
-    def __init__(self, janela):
-        self.janela = janela

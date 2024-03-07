@@ -1,5 +1,5 @@
 from dataBase import loadWords
-from screen import Screen, Draw, Animation
+from screen import Screen, Draw
 
 
 def play(janela: Screen, desenho: Draw) -> None:
@@ -9,17 +9,15 @@ def play(janela: Screen, desenho: Draw) -> None:
     desenho.drawWords(palavras)
     desenho.drawFunc(main)
 
-
 def main() -> None:
-    desenho.drawLabel("CAÇA-PALAVRAS", 260, 85)
-    desenho.drawButton("Jogar", 305, 245, 18, comand=lambda: play(janela, desenho))
-    desenho.drawButton("Sair", 305, 320, 18, comand=janela.closeWindow)
-
+    desenho.drawBgMenu()
+    desenho.drawLabel("CAÇA-PALAVRAS", 240, 90, tam=28)
+    desenho.drawButton("Jogar", 328, 235, 18, comand=lambda: play(janela, desenho))
+    desenho.drawButton("Sair", 328, 310, 18, comand=janela.closeWindow)
 
 if __name__ == "__main__":
     janela = Screen()
     janela.configureWindow()
     desenho = Draw(janela)
-    animacao = Animation(janela)
     main()
     janela.screen.mainloop()

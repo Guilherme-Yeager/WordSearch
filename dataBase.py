@@ -35,7 +35,6 @@ if __name__ == "__main__":
             "MAYLI",
             "JOSEVAL",
             "ANDRE",
-            "ANDRES",
         ]
     }
 
